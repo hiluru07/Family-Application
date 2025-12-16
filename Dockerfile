@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Copy only the project file
+# Copy only project file
 COPY FamilyApplication/*.csproj FamilyApplication/
 RUN dotnet restore "FamilyApplication/FamilyApplication.csproj"
 
