@@ -1,14 +1,17 @@
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-COPY *.sln .
+# Copy only the project file
 COPY FamilyApplication/*.csproj FamilyApplication/
-RUN dotnet restore
+RUN dotnet restore "FamilyApplication/FamilyApplication.csproj"
 
+# Copy all files
 COPY . .
 WORKDIR /app/FamilyApplication
 RUN dotnet publish -c Release -o /out
 
+# Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /out .

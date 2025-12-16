@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using FamilyApplication.CommonServices;
 using FamilyApplication.DBContext;
 using FamilyApplication.IRepos;
@@ -64,8 +65,20 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddDbContext<ApplicationDBContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<ApplicationDBContext>(options => 
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString =
+    builder.Configuration.GetConnectionString("Postgres") ??
+    $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
+    $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
+    $"Database={Environment.GetEnvironmentVariable("DB_NAME")};" +
+    $"Username={Environment.GetEnvironmentVariable("DB_USER")};" +
+    $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};" +
+    "SSL Mode=Require;Trust Server Certificate=true;";
+
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+    options.UseNpgsql(connectionString));
+
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSection["Key"]);
