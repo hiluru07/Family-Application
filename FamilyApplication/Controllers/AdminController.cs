@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyApplication.Controllers
 {
-    [Authorize(Roles ="Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -17,7 +16,7 @@ namespace FamilyApplication.Controllers
         {
             _adminService = adminService;
         }
-
+        [AllowAnonymous]
         [HttpPost("registerAdmin")]
         public async Task<IActionResult> registerAdmin([FromForm]RegisterDTO registerDTO)
         {
@@ -29,6 +28,7 @@ namespace FamilyApplication.Controllers
             }
             return Ok(admin);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("updateAdmin/{id}")]
         public async Task<IActionResult> UpdateAdmin([FromForm] UpdateProfileDTO updateProfileDTO, int id)
         {
